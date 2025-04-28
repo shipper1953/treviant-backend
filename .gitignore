@@ -2,5 +2,5 @@ node_modules
 .env
 .env.*
 .DS_Store
-cloudbuild.yaml
-dockerignore
+.vercel
+dist
