@@ -1,6 +1,6 @@
 // controllers/adminController.js
 import db from '../utils/db.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 
 export const getAllUsers = async (req, res) => {

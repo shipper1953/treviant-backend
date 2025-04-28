@@ -1,5 +1,5 @@
 // backend/scripts/resetAdminPassword.js
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import db from '..db.js';
 
 const email = 'admin@treviant.com';

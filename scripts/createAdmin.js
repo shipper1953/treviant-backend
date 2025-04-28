@@ -1,5 +1,5 @@
 // /backend/scripts/createAdmin.js
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import db from '..db.js'
 import dotenv from 'dotenv';
 

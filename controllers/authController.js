@@ -1,5 +1,5 @@
 // controllers/authController.js
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import db from '../utils/db.js';
 
