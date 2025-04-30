@@ -9,9 +9,17 @@ import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import db from './utils/db.js';
 
+const allowedOrigins = [
+  'http://localhost:5173', // for local dev
+  'https://frontend-aazqqonbj-shipper1953s-projects.vercel.app' // your Vercel frontend URL
+];
+
 const app = express(); // <== You forgot this line
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 
 // Health route

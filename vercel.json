@@ -11,6 +11,14 @@
         "src": "/(.*)",
         "dest": "/server.js"
       }
-    ]
+    ],
+    "env": {
+      "EASYPOST_API_KEY": "@easypost_api_key",
+      "GOOGLE_PLACES_API_KEY": "@google_places_api_key",
+      "DATABASE_URL": "@database_url",
+      "JWT_SECRET": "@jwt_secret",
+      "ADMIN_EMAIL": "@admin_email",
+      "ADMIN_PASSWORD": "@admin_password"
+    }
   }
-   
+  
