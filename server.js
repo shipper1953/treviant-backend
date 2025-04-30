@@ -19,9 +19,9 @@ app.get('/', (req, res) => {
   res.send('✅ Treviant Backend is running!');
 });
 
-app.use('/api/shipping', shippingRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api', shippingRoutes);
+app.use('/api', authRoutes);
+app.use('/api', adminRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

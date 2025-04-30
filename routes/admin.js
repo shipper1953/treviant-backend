@@ -3,11 +3,12 @@ import express from 'express';
 import { getAllUsers } from '../controllers/adminController.js';
 import { authenticateToken, isAdmin } from '../middleware/auth.js';
 
-router.use(authenticateToken, isAdmin);
-
 const router = express.Router();
 
-// Admin-only route to fetch all users
-router.get('/users', authenticateAdmin, getAllUsers);
+// 🔥 Middlewares must come AFTER router is declared
+router.use(authenticateToken, isAdmin);
+
+// GET /api/admin/users
+router.get('/users', getAllUsers);
 
 export default router;
