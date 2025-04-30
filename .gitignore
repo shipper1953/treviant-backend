@@ -1,18 +1,6 @@
-# Node modules
+# .gitignore
 node_modules/
-
-# Knex migration builds
-migrations/
-
-# Environment files
 .env
-.env.*
-
-# Debug logs
-npm-debug.log*
-
-# Vercel deploy artifacts
-.vercel/
-
-# System files
-.DS_Store
+dist/
+*.log
+package-lock.json
