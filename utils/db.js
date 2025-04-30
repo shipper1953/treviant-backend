@@ -4,13 +4,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const db = knex({
+const db = knex({
   client: 'pg',
   connection: process.env.DATABASE_URL,
   migrations: {
     tableName: 'knex_migrations'
   }
 });
+export default db;
 
 export const connectDB = async () => {
   try {
