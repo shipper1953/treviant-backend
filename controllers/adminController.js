@@ -1,64 +1,48 @@
-// controllers/adminController.js
-import db from '../utils/db.js';
-import bcrypt from 'bcrypt';
-
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await db('users').select('id', 'email', 'is_admin', 'created_at');
-    res.json(users);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ message: 'Server error fetching users.' });
+    const users = await User.find({}, '-password'); // exclude password
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
   }
 };
 
 export const createUser = async (req, res) => {
   try {
-    const { email, password, is_admin } = req.body;
-    const existing = await db('users').where({ email }).first();
-    if (existing) return res.status(400).json({ message: 'User already exists.' });
+    const { email, password, role = 'user' } = req.body;
 
-    const hashed = await bcrypt.hash(password, 10);
-    const [user] = await db('users')
-      .insert({ email, password: hashed, is_admin: is_admin || false })
-      .returning(['id', 'email', 'is_admin', 'created_at']);
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
 
-    res.status(201).json(user);
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Server error creating user.' });
-  }
-};
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
 
-export const updateUser = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { email, is_admin } = req.body;
+    const newUser = new User({ email, password, role });
+    await newUser.save();
 
-    const updated = await db('users')
-      .where({ id })
-      .update({ email, is_admin })
-      .returning(['id', 'email', 'is_admin']);
-
-    if (!updated.length) return res.status(404).json({ message: 'User not found.' });
-
-    res.json(updated[0]);
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Server error updating user.' });
+    res.status(201).json({ message: 'User created', userId: newUser._id });
+  } catch (err) {
+    res.status(500).json({ error: 'Error creating user' });
   }
 };
 
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const count = await db('users').where({ id }).del();
-    if (count === 0) return res.status(404).json({ message: 'User not found.' });
 
-    res.json({ message: 'User deleted.' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ message: 'Server error deleting user.' });
+    const deleted = await User.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error deleting user' });
   }
 };
