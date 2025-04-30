@@ -9,15 +9,16 @@ dotenv.config();
 
 const app = express();
 
-// ✅ CORS Middleware (allow only your frontend domain in production)
+const allowedOrigins = [
+  'https://frontend-one-zeta-45.vercel.app',
+  'http://localhost:5173',
+];
+
 app.use(cors({
-  origin: ['https://frontend-one-zeta-45.vercel.app'],  // <-- Update this to match your actual frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 
-// ✅ Handle preflight manually if needed (optional)
 app.options('*', cors());
 
 // Middleware
