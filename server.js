@@ -1,29 +1,33 @@
-// server.js
+// backend/server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import shippingRoutes from './routes/shipping.js';
+import { connectDB } from './utils/db.js';
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3001;
 
-// CORS configuration
+// Connect to database
+connectDB();
+
+// Configure CORS for frontend on Vercel
 const allowedOrigins = [
   'https://frontend-one-zeta-45.vercel.app',
-  'https://frontend-qxraph5nd-shipper1953s-projects.vercel.app',
-  'http://localhost:5173',
+  'https://frontend-3edtknc06-shipper1953s-projects.vercel.app',
+  'https://frontend.vercel.app', // add your actual frontend deployment URL here
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+      return callback(null, true);
     }
+    callback(new Error('CORS not allowed from this origin'));
   },
   credentials: true,
 }));
@@ -33,14 +37,14 @@ app.use(express.json());
 // Routes
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
-app.use('/api/shipping', shippingRoutes);
+app.use('/shipping', shippingRoutes);
 
-// Health check
+// Root health check
 app.get('/', (req, res) => {
-  res.status(200).send('Treviant backend is running ✅');
+  res.send('Treviant backend is running ✅');
 });
 
-const PORT = process.env.PORT || 3001;
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is live at http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
