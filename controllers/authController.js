@@ -45,6 +45,11 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    // ✅ Enforce admin-only login here
+    if (req.originalUrl.includes('admin-login') && user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied: Admin only.' });
+    }
+
     const token = generateToken(user);
     res.json({ user, token });
   } catch (err) {
@@ -52,3 +57,4 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Login failed' });
   }
 };
+
