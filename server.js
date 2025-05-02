@@ -17,19 +17,14 @@ connectDB();
 
 // Configure CORS for frontend on Vercel
 const allowedOrigins = [
+  'http://localhost:5173',
   'https://frontend-one-zeta-45.vercel.app',
-  'https://frontend-3edtknc06-shipper1953s-projects.vercel.app',
-  'https://frontend.vercel.app', // add your actual frontend deployment URL here
+  'https://your-custom-domain.com' // <- add all frontend URLs
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    callback(new Error('CORS not allowed from this origin'));
-  },
-  credentials: true,
+  origin: allowedOrigins,
+  credentials: true, // if you're sending cookies or auth headers
 }));
 
 app.use(express.json());
