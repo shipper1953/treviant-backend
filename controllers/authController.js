@@ -35,11 +35,8 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Login user
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
-const login = async (req, res) => {
+// ✅ Exported properly
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -59,9 +56,3 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-console.log('Login attempt for:', email);
-console.log('User found:', user);
-console.log('Password match:', await bcrypt.compare(password, user.password));
-
-
