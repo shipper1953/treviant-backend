@@ -12,34 +12,41 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Connect to database
+// Database Connection
 connectDB();
 
-// Configure CORS for frontend on Vercel
+// ✅ CORS CONFIGURATION
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://frontend-one-zeta-45.vercel.app',
-  'https://your-custom-domain.com' // <- add all frontend URLs
+  'https://frontend-one-zeta-45.vercel.app', // Vercel frontend
+  'https://your-custom-domain.com'           // Optional: add your production domain if you have one
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true, // if you're sending cookies or auth headers
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`❌ Not allowed by CORS: ${origin}`));
+    }
+  },
+  credentials: true,
 }));
 
 app.use(express.json());
 
-// Routes
+// 🔁 API ROUTES
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/shipping', shippingRoutes);
 
-// Root health check
+// ✅ HEALTH CHECK
 app.get('/', (req, res) => {
-  res.send('Treviant backend is running ✅');
+  res.send('✅ Treviant backend is up and running!');
 });
 
-// Start server
+// 🚀 START SERVER
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });
+
