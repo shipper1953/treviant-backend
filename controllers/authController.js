@@ -36,25 +36,32 @@ export const registerUser = async (req, res) => {
 };
 
 // Login user
-export const login = async (req, res) => {
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
     const user = await db('users').where({ email }).first();
+    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // ✅ Enforce admin-only login here
-    if (req.originalUrl.includes('admin-login') && user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied: Admin only.' });
-    }
+    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
 
-    const token = generateToken(user);
-    res.json({ user, token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Login failed' });
+    res.status(200).json({ token, role: user.role });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
+
+console.log('Login attempt for:', email);
+console.log('User found:', user);
+console.log('Password match:', await bcrypt.compare(password, user.password));
+
 
