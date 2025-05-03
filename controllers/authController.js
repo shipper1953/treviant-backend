@@ -37,23 +37,30 @@ export const registerUser = async (req, res) => {
 
 // ✅ Exported properly
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
+    const { email, password } = req.body;
     const user = await db('users').where({ email }).first();
-    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
+    const token = generateToken(user);
+
+    // Explicitly return isAdmin so the frontend can access it
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        isAdmin: !!user.is_admin,
+      },
+      token
     });
-
-    res.status(200).json({ token, role: user.role });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
-    res.status(200).json({ token, isAdmin: user.role === 'admin' });
+    
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Login failed' });
   }
 };
+
