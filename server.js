@@ -19,6 +19,7 @@ connectDB();
 const allowedOrigins = [
   'http://localhost:5173',
   'https://frontend-one-zeta-45.vercel.app', // Vercel frontend
+  'https://frontend-kt14o4r9j-shipper1953s-projects.vercel.app', // Add your Vercel frontend URL
   'https://your-custom-domain.com'           // Optional: add your production domain if you have one
 ];
 
